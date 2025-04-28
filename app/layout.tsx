@@ -1,16 +1,15 @@
 'use client'
 
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import { Mulish } from "next/font/google";
-import CreateFolderModal from "./components/Folder/CreateFolderModal";
 import { SessionProvider } from "next-auth/react";
 import Toast from "./components/Toast";
 import { ShowToastContext } from "@/context/ShowToastContext";
 import { useState } from "react";
 import { ParentFolderIdContext } from "@/context/ParentFolderIdContext";
+import Storage from "./components/Storage/Storage";
 
 
 
@@ -33,6 +32,7 @@ export default function RootLayout({
   const [showToastMsg, setShowToastMsg] = useState<string | null | undefined>();
   const [parentFolderId, setParentFolderId] = useState<string | null | undefined>();
 
+
   return (
     <html lang="en">
       <body
@@ -48,12 +48,15 @@ export default function RootLayout({
               
               {children}
             </main>
-            <div className="bg-white sticky p-5">
-              Storage
+            <div className="bg-white sticky p-5 order-first md:order-last m-5">
+              <Storage/>
             </div>
           </div>
    
         </div>
+     
+        
+      
         {showToastMsg && <Toast msg={showToastMsg}/>}
         </ShowToastContext.Provider>
         </ParentFolderIdContext.Provider>

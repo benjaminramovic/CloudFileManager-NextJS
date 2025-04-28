@@ -4,7 +4,7 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 export const SignIn = ({ provider, ...props }: { provider?: string } & React.ButtonHTMLAttributes<HTMLButtonElement>) => {
   return (
     <form onSubmit={(e) => { e.preventDefault(); signIn(provider); }}>
-      <button {...props} type="submit">Sign in</button>
+      <button {...props} type="submit">Sign in with Github</button>
     </form>
   )
 }

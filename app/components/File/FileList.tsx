@@ -3,8 +3,8 @@ import React, { useContext } from 'react'
 import FileItem from './FileItem'
 
 
-function FileList({fileList} : any) {
-     const fileListCustom=[
+function FileList({files} : any) {
+     /*const fileListCustom=[
          {
              id:1,
              name:'UX Principal.docx',
@@ -34,7 +34,7 @@ function FileList({fileList} : any) {
              modifiedAt:'Nov 23,2020'
          },
   
-     ]
+     ]*/
    
   return (
     <div className='bg-white mt-5 p-5
@@ -56,7 +56,7 @@ function FileList({fileList} : any) {
             
             </div>
         </div>
-        {fileListCustom&&fileListCustom.map((item,index)=>(
+        {files.map((item:any,index:any)=>(
             <div key={index}>
             
             <FileItem file={item} key={index}/> 

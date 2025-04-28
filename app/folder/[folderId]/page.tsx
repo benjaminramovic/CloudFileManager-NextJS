@@ -1,4 +1,5 @@
 'use client'
+import FileList from '@/app/components/File/FileList';
 import FolderList from '@/app/components/Folder/FolderList';
 import SubfolderList from '@/app/components/Folder/SubfolderList';
 import SearchBar from '@/app/components/SearchBar';
@@ -18,10 +19,17 @@ const FolderDetails = () => {
     const {data:session} = useSession();
     const db = getFirestore();
     const [folders,setFolders] = useState<any[]>([])
+    const [files,setFiles] = useState<any[]>([])
 
     useEffect(() => {
-        setParentFolderId(folderId);
+         if (folderId && session) {
+          setParentFolderId(folderId);
           getFolderList();
+          getFileList();
+      }
+        
+          //getFolderList();
+          //getFileList();
         
     },[folderId,session,showToastMsg])
   
@@ -40,12 +48,31 @@ const FolderDetails = () => {
           setFolders((prev:any) => [...prev, { id: doc.id, ...doc.data() }]);
         });
         setFolders(folderData);
-        setParentFolderId(0);
+        
       }
     
       }
 
+      const getFileList = async () => {
+        if(session?.user) {
+           const q = query(collection(db, "Files"), where("createdBy","==",session?.user?.email),where("parentFolderId","==",folderId));
+        
+    
+        const querySnapshot = await getDocs(q);
+        const fileData: any[] = [];
+        querySnapshot.forEach((doc) => {
+          fileData.push({ id: doc.id, ...doc.data() });
+          // doc.data() is never undefined for query doc snapshots
+          //setFolders((prev:any) => [...prev, { id: doc.id, ...doc.data() }]);
+        });
+        setFiles(fileData);
+        console.log(fileData)
+      }
+      }
+
   return (
+   
+    
     <div className='p-5'>
 
       <SearchBar />
@@ -53,7 +80,12 @@ const FolderDetails = () => {
       <h1 className='text-2xl font-bold mt-5'>{searchParams.get('name')}</h1>
 
       <SubfolderList folders={folders}/>
+
+      <FileList files={files} />
+
     </div>
+    
+    
   )
 }
 

@@ -9,18 +9,21 @@ import { useSession } from "next-auth/react";
 import { useContext, useEffect, useState } from "react";
 import { ParentFolderIdContext } from "@/context/ParentFolderIdContext";
 import { ShowToastContext } from "@/context/ShowToastContext";
+import { SignIn } from "./components/auth-component";
+import Image from "next/image";
 
 export default function Home() {
   //const session = await auth();
   const { data: session } = useSession();
   const db = getFirestore(app);
   const [folders, setFolders] = useState<any[]>([]);
+  const [files, setFiles] = useState<any[]>([]);
+
   const {parentFolderId, setParentFolderId} = useContext(ParentFolderIdContext);
   const { showToastMsg, setShowToastMsg }:any = useContext(ShowToastContext);
 
 
   const getFolderList = async () => {
-    
     if(session?.user) {
        const q = query(collection(db, "Folders"), where("createdBy","==",session?.user?.email),where("parentId","==",0));
     
@@ -33,29 +36,57 @@ export default function Home() {
       //setFolders((prev:any) => [...prev, { id: doc.id, ...doc.data() }]);
     });
     setFolders(folderData);
-    setParentFolderId(0);
+  }
   }
 
+  const getFileList = async () => {
+    if(session?.user) {
+       const q = query(collection(db, "Files"), where("createdBy","==",session?.user?.email),where("parentFolderId","==",0));
+    
+
+    const querySnapshot = await getDocs(q);
+    const fileData: any[] = [];
+    querySnapshot.forEach((doc) => {
+      fileData.push({ id: doc.id, ...doc.data() });
+      // doc.data() is never undefined for query doc snapshots
+      //setFolders((prev:any) => [...prev, { id: doc.id, ...doc.data() }]);
+    });
+    setFiles(fileData);
+    console.log(fileData)
+  }
   }
 
   useEffect(() => {
     getFolderList();
-    //alert(session?.user?.email)
+    getFileList();
 
     setParentFolderId(0);
     
   }, [session,showToastMsg]);
 
   return (
-    <div className="p-5">
-    <SearchBar />
-    {session?.user ?
-   <h1>Welcome, {session?.user?.name} !</h1>
-   : 
-   <h1>Welcome!</h1>
-    }
-    <FolderList folders={folders}/>
-    <FileList/>
-   </div>
-  );
+
+    
+   <>
+   {session?.user ? 
+     <div className="p-5">
+   <SearchBar />
+   <FolderList folders={folders}/>
+   <FileList files={files}/>
+
+  
+  </div> : 
+    <div className='flex items-center justify-center h-[90vh]'>
+    <Image alt="logo" src="/logo.png" width={500} height={400} />
+    </div>
+  
+}
+  </>
+
+    
+    
+ 
+    
+  )
+   
 }
