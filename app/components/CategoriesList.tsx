@@ -44,7 +44,7 @@ const CategoriesList = () => {
       <div className='flex flex-col justify-center items-center bg-blue-100 p-5 rounded-lg mt-5 gap-1'>
         <h2 className='font-bold'>Need More Space?</h2>
         <p>Get more space by upgrading the plan</p>
-        <button className='bg-blue-400 p-1.5 text-center text-white mt-3 p-2 rounded-md'>Upgrade the plan</button>
+        <button className='bg-blue-400 text-center text-white mt-3 p-2 rounded-md'>Upgrade the plan</button>
       </div>
     </div>
   )
